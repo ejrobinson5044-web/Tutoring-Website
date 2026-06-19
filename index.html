@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EF Practice Studio</title>
+    <meta
+      name="description"
+      content="A research-informed executive functioning learning website with age-grouped skill pathways."
+    />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <style>
+:root {
+  --ink: #172422;
+  --muted: #5d6b66;
+  --paper: #fbfcf8;
+  --surface: #ffffff;
+  --soft: #eef5ef;
+  --teal: #167c78;
+  --teal-dark: #0f5554;
+  --green: #678a45;
+  --gold: #dfa526;
+  --coral: #df745d;
+  --line: rgba(23, 36, 34, 0.14);
+  --shadow: 0 22px 60px rgba(13, 37, 34, 0.22);
+  --radius: 8px;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+}
+
+body::selection {
+  background: rgba(22, 124, 120, 0.22);
+}
+
+a {
+  color: inherit;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 72px;
+  padding: 14px clamp(18px, 4vw, 56px);
+  border-bottom: 1px solid var(--line);
+  background: rgba(251, 252, 248, 0.92);
+  backdrop-filter: blur(16px);
+}
+
+.brand,
+.site-nav {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 10px;
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.brand-mark,
+.skill-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--teal-dark);
+  color: #ffffff;
+}
+
+.site-nav {
+  gap: clamp(10px, 2.5vw, 30px);
+  color: var(--muted);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.site-nav a {
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--teal-dark);
+}
+
+.studio {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 72px);
+  background-image:
+    linear-gradient(90deg, rgba(9, 25, 24, 0.88) 0%, rgba(9, 25, 24, 0.74) 42%, rgba(9, 25, 24, 0.18) 78%),
+    url('https://images.unsplash.com/photo-1656941599930-85ec8236b81f?auto=format&fit=crop&w=2200&q=80');
+  background-position: center;
+  background-size: cover;
+}
+
+.studio-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.08));
+  pointer-events: none;
+}
+
+.studio-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.86fr) minmax(340px, 1.14fr);
+  gap: clamp(26px, 4vw, 56px);
+  align-items: center;
+  width: min(1180px, calc(100% - 36px));
+  min-height: calc(100vh - 72px);
+  margin: 0 auto;
+  padding: clamp(34px, 5vw, 72px) 0;
+}
+
+.intro-copy {
+  color: #ffffff;
+  max-width: 580px;
+}
+
+.eyebrow,
+.panel-label,
+.age-kicker {
+  margin: 0;
+  color: var(--teal);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.intro-copy .eyebrow {
+  color: #9fe7d8;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  text-wrap: pretty;
+}
+
+h1 {
+  margin: 10px 0 18px;
+  max-width: 590px;
+  font-size: 5.25rem;
+  line-height: 0.96;
+  letter-spacing: 0;
+}
+
+.intro-copy > p:not(.eyebrow) {
+  max-width: 55ch;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.2rem;
+}
+
+.source-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.source-strip span,
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  padding: 7px 11px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.09);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.source-strip svg {
+  width: 16px;
+  height: 16px;
+}
+
+.workbench {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.workbench-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 22px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.workbench h2,
+.age-detail h3,
+.section-head h2,
+.skill-card h3,
+.evidence-list h3 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.workbench h2 {
+  margin-top: 2px;
+  font-size: 1.85rem;
+}
+
+.status-chip {
+  border-color: rgba(22, 124, 120, 0.18);
+  color: var(--teal-dark);
+  background: rgba(22, 124, 120, 0.1);
+  white-space: nowrap;
+}
+
+.age-tabs {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+}
+
+.age-tab {
+  min-height: 56px;
+  border: 0;
+  border-radius: 0;
+  padding: 9px 6px;
+  background: #f8faf6;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.age-tab:hover,
+.age-tab:focus-visible {
+  background: #eef5ef;
+  color: var(--teal-dark);
+  outline: none;
+}
+
+.age-tab[aria-selected="true"] {
+  background: var(--teal-dark);
+  color: #ffffff;
+}
+
+.age-detail {
+  padding: 22px;
+}
+
+.age-kicker {
+  color: var(--coral);
+}
+
+.age-detail h3 {
+  margin-top: 5px;
+  font-size: 2.15rem;
+  line-height: 1.05;
+}
+
+.age-detail > p {
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.detail-grid > div,
+.lesson-flow,
+.coach-note,
+.skill-card,
+.evidence-list article,
+.source-cards a,
+.path-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.detail-grid > div {
+  padding: 16px;
+}
+
+h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: var(--teal-dark);
+  font-size: 0.92rem;
+}
+
+h4 svg {
+  width: 18px;
+  height: 18px;
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+li + li {
+  margin-top: 7px;
+}
+
+.lesson-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 14px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.lesson-step {
+  min-height: 118px;
+  padding: 14px;
+  background: #ffffff;
+}
+
+.lesson-step span {
+  color: var(--coral);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lesson-step strong {
+  display: block;
+  margin: 5px 0 4px;
+  font-size: 0.96rem;
+}
+
+.lesson-step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.coach-note {
+  margin: 14px 0 0;
+  padding: 13px 15px;
+  color: var(--teal-dark);
+  background: rgba(22, 124, 120, 0.08);
+  font-weight: 750;
+}
+
+.band {
+  padding: clamp(60px, 8vw, 108px) clamp(18px, 4vw, 56px);
+}
+
+.section-head {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.section-head h2 {
+  margin-top: 8px;
+  font-size: 3.35rem;
+  line-height: 1;
+}
+
+.section-head p:not(.eyebrow) {
+  margin: 14px auto 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.age-paths {
+  background: linear-gradient(180deg, #fbfcf8 0%, #eef5ef 100%);
+}
+
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(154px, 1fr));
+  gap: 12px;
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.path-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 248px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.path-card:hover,
+.path-card:focus-visible {
+  border-color: rgba(22, 124, 120, 0.45);
+  box-shadow: 0 14px 34px rgba(30, 70, 60, 0.12);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.path-card strong {
+  color: var(--teal-dark);
+  font-size: 0.9rem;
+}
+
+.path-card h3 {
+  margin: 8px 0 10px;
+  font-size: 1.06rem;
+  line-height: 1.16;
+}
+
+.path-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.path-card span {
+  display: inline-block;
+  width: 38px;
+  height: 4px;
+  margin-top: auto;
+  border-radius: 999px;
+  background: var(--accent, var(--teal));
+}
+
+.skills {
+  background: #ffffff;
+}
+
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.skill-card {
+  min-height: 260px;
+  padding: 24px;
+}
+
+.skill-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--teal-dark);
+}
+
+.skill-card h3 {
+  font-size: 1.35rem;
+}
+
+.skill-card p {
+  color: var(--muted);
+}
+
+.skill-card strong {
+  display: block;
+  color: var(--ink);
+  font-size: 0.94rem;
+}
+
+.research {
+  background: #172422;
+  color: #ffffff;
+}
+
+.research .eyebrow {
+  color: #9fe7d8;
+}
+
+.research-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(340px, 1.1fr);
+  gap: clamp(24px, 5vw, 66px);
+  align-items: start;
+  width: min(1160px, 100%);
+  margin: 0 auto;
+}
+
+.research .section-head {
+  margin: 0;
+  text-align: left;
+}
+
+.research .section-head p:not(.eyebrow) {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.evidence-list {
+  display: grid;
+  gap: 12px;
+}
+
+.evidence-list article {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  column-gap: 14px;
+  padding: 18px;
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.evidence-list span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(159, 231, 216, 0.15);
+  color: #9fe7d8;
+  font-weight: 900;
+}
+
+.evidence-list h3 {
+  font-size: 1.1rem;
+}
+
+.evidence-list p {
+  grid-column: 2;
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.source-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  width: min(1160px, 100%);
+  margin: 34px auto 0;
+}
+
+.source-cards a {
+  min-height: 112px;
+  padding: 15px;
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 760;
+}
+
+.source-cards span {
+  display: block;
+  color: #9fe7d8;
+  margin-bottom: 10px;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px clamp(18px, 4vw, 56px);
+  color: var(--muted);
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer a {
+  color: var(--teal-dark);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+@media (max-width: 1120px) {
+  .studio-inner,
+  .research-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .studio-inner {
+    align-items: start;
+  }
+
+  .workbench {
+    max-width: 840px;
+  }
+
+  .path-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .site-header {
+    position: relative;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    min-height: auto;
+  }
+
+  .studio {
+    min-height: auto;
+    background-position: 58% center;
+  }
+
+  .studio-inner {
+    min-height: auto;
+  }
+
+  h1 {
+    font-size: 4.1rem;
+  }
+
+  .section-head h2 {
+    font-size: 2.7rem;
+  }
+
+  .age-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .detail-grid,
+  .skill-grid,
+  .source-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .path-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .site-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .studio-inner {
+    width: min(100% - 28px, 1180px);
+    padding: 28px 0 40px;
+  }
+
+  h1 {
+    font-size: 3.25rem;
+  }
+
+  .intro-copy > p:not(.eyebrow) {
+    font-size: 1.05rem;
+  }
+
+  .workbench h2 {
+    font-size: 1.55rem;
+  }
+
+  .age-detail h3 {
+    font-size: 1.65rem;
+  }
+
+  .section-head h2 {
+    font-size: 2.25rem;
+  }
+
+  .source-strip {
+    gap: 8px;
+  }
+
+  .workbench-head {
+    flex-direction: column;
+  }
+
+  .age-tabs,
+  .path-grid,
+  .lesson-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .age-tab {
+    min-height: 48px;
+  }
+
+  .age-detail,
+  .workbench-head {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .evidence-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .evidence-list p {
+    grid-column: auto;
+  }
+
+  .site-footer {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#studio" aria-label="EF Practice Studio home">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="brain-circuit"></i></span>
+        <span>EF Practice Studio</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="#age-paths">Age Paths</a>
+        <a href="#skills">Skills</a>
+        <a href="#research">Research</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="studio" id="studio">
+        <div class="studio-overlay"></div>
+        <div class="studio-inner">
+          <div class="intro-copy">
+            <p class="eyebrow">Executive functioning, taught developmentally</p>
+            <h1>Practice the skills behind learning.</h1>
+            <p>
+              A ready-to-use curriculum shell for attention, planning, self-control,
+              flexible thinking, and reflection, organized by how EF skills tend to
+              grow from early childhood through late adolescence.
+            </p>
+            <div class="source-strip" aria-label="Research basis">
+              <span><i data-lucide="book-open"></i> Harvard age bands</span>
+              <span><i data-lucide="line-chart"></i> 10-15 growth window</span>
+              <span><i data-lucide="target"></i> Practice before independence</span>
+            </div>
+          </div>
+
+          <section class="workbench" aria-labelledby="workbench-title">
+            <div class="workbench-head">
+              <div>
+                <p class="panel-label">Age band</p>
+                <h2 id="workbench-title">Learning path</h2>
+              </div>
+              <span class="status-chip">Educational, not diagnostic</span>
+            </div>
+
+            <div class="age-tabs" id="ageTabs" role="tablist" aria-label="Executive functioning age groups"></div>
+
+            <article class="age-detail" aria-live="polite">
+              <p class="age-kicker" id="groupTag"></p>
+              <h3 id="groupTitle"></h3>
+              <p id="groupRationale"></p>
+
+              <div class="detail-grid">
+                <div>
+                  <h4><i data-lucide="layers"></i> Primary targets</h4>
+                  <ul id="focusList"></ul>
+                </div>
+                <div>
+                  <h4><i data-lucide="list-checks"></i> Practice formats</h4>
+                  <ul id="practiceList"></ul>
+                </div>
+              </div>
+
+              <div class="lesson-flow" id="lessonFlow"></div>
+              <p class="coach-note" id="coachNote"></p>
+            </article>
+          </section>
+        </div>
+      </section>
+
+      <section class="band age-paths" id="age-paths">
+        <div class="section-head">
+          <p class="eyebrow">Developmental grouping</p>
+          <h2>Age paths for EF instruction</h2>
+          <p>
+            The bands below keep early learning caregiver-led, then gradually shift
+            toward learner-owned systems as planning, monitoring, and independence
+            become realistic goals.
+          </p>
+        </div>
+        <div class="path-grid" id="pathGrid" aria-label="Age group overview"></div>
+      </section>
+
+      <section class="band skills" id="skills">
+        <div class="section-head">
+          <p class="eyebrow">What gets taught</p>
+          <h2>Three core EF muscles, one visible routine</h2>
+          <p>
+            Each age path practices working memory, inhibitory control, and cognitive
+            flexibility through a repeated cycle: name the demand, choose a tool,
+            use it in a real task, then reflect.
+          </p>
+        </div>
+        <div class="skill-grid">
+          <article class="skill-card">
+            <span class="skill-icon"><i data-lucide="notebook-tabs"></i></span>
+            <h3>Working Memory</h3>
+            <p>Holding instructions, goals, and steps in mind long enough to use them.</p>
+            <strong>Tools: visual plans, rehearsal, chunking, checklist starts.</strong>
+          </article>
+          <article class="skill-card">
+            <span class="skill-icon"><i data-lucide="pause-circle"></i></span>
+            <h3>Inhibitory Control</h3>
+            <p>Pausing, resisting distractions, waiting, and matching action to purpose.</p>
+            <strong>Tools: stop-go games, timers, cues, pre-commitment prompts.</strong>
+          </article>
+          <article class="skill-card">
+            <span class="skill-icon"><i data-lucide="shuffle"></i></span>
+            <h3>Cognitive Flexibility</h3>
+            <p>Switching strategies, seeing another viewpoint, and adjusting after errors.</p>
+            <strong>Tools: rule-switching, plan B mapping, compare-and-revise.</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="band research" id="research">
+        <div class="research-layout">
+          <div class="section-head">
+            <p class="eyebrow">Why these bands</p>
+            <h2>Literature-informed, classroom-practical</h2>
+            <p>
+              Harvard's EF activity guide uses age sections from infancy through
+              adolescence. This site preserves those developmental shifts, combines
+              6-18 and 18-36 months as caregiver-led foundations, and splits later
+              childhood and adolescence where instruction changes sharply.
+            </p>
+          </div>
+
+          <div class="evidence-list">
+            <article>
+              <span>01</span>
+              <h3>Early years need adult scaffolding</h3>
+              <p>
+                Infants and toddlers practice EF through imitation, turn-taking,
+                language, songs, movement, and predictable routines.
+              </p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>School-age learners need tools</h3>
+              <p>
+                Ages 5-12 move from rule games and play toward checklists, planning,
+                self-monitoring, and strategy talk tied to actual school demands.
+              </p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Adolescence deserves finer cuts</h3>
+              <p>
+                Large-sample work reports rapid EF development around 10-15, with
+                maturation continuing toward 18-20, so teen lessons should become
+                progressively more learner-owned.
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <div class="source-cards" aria-label="Sources">
+          <a href="https://developingchild.harvard.edu/resources/handouts-tools/activities-guide-enhancing-and-practicing-executive-function-skills/" target="_blank" rel="noreferrer">
+            <span><i data-lucide="external-link"></i></span>
+            Harvard Center on the Developing Child: EF activities by age
+          </a>
+          <a href="https://developingchild.harvard.edu/resource-guides/guide-executive-function/" target="_blank" rel="noreferrer">
+            <span><i data-lucide="external-link"></i></span>
+            Harvard Center on the Developing Child: Guide to Executive Function
+          </a>
+          <a href="https://www.nature.com/articles/s41467-023-42540-8" target="_blank" rel="noreferrer">
+            <span><i data-lucide="external-link"></i></span>
+            Nature Communications: EF maturation from adolescence to adulthood
+          </a>
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4084861/" target="_blank" rel="noreferrer">
+            <span><i data-lucide="external-link"></i></span>
+            Diamond, 2013: core executive functions
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Designed as an educational planning site for executive-functioning instruction.</p>
+      <a href="#studio">Back to top</a>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script>
+const ageGroups = [
+  {
+    id: "caregiver",
+    label: "6-36 mo",
+    accent: "#167c78",
+    tag: "Caregiver-led foundations",
+    title: "Attention, turn-taking, and imitation",
+    rationale:
+      "The learner is not ready for formal lessons. Adults build EF foundations through warm routines, shared attention, copying games, simple language, and predictable start-stop patterns.",
+    focus: ["Joint attention", "Working memory through copying", "Waiting and turn-taking", "Simple self-control"],
+    practice: ["Peekaboo and hidden-object play", "Copy-me gestures and fingerplays", "Sorting, naming, and cleanup routines", "Start-stop songs and movement"],
+    coach:
+      "Keep the adult as the external organizer: short, repeated, sensory-rich practice beats long explanations.",
+    steps: [
+      ["Notice", "Shared cue", "Point, name, and wait for attention."],
+      ["Model", "One action", "Show one movement or step at a time."],
+      ["Copy", "Turn-taking", "Pause so the child can imitate."],
+      ["Repeat", "Same rhythm", "Practice in the same routine again."]
+    ]
+  },
+  {
+    id: "preschool",
+    label: "3-5",
+    accent: "#df745d",
+    tag: "Play-based foundations",
+    title: "Rules, roles, feelings, and flexible play",
+    rationale:
+      "Preschool EF practice works best when rules are embedded in play. Children can hold simple roles, follow changing game rules, retell stories, and practice stopping impulses with adult support.",
+    focus: ["Imaginary play rules", "Emotion naming", "Simple cognitive flexibility", "Listening and remembering"],
+    practice: ["Role-play with changing jobs", "Freeze, red-light, green-light, and opposite games", "Story retell with picture cards", "Matching and sorting by changing rules"],
+    coach:
+      "Use play to make the rule visible; the goal is practice with support, not perfect self-control.",
+    steps: [
+      ["Name", "The rule", "Say the game rule in one short phrase."],
+      ["Play", "The role", "Act out the rule with movement or objects."],
+      ["Switch", "One change", "Change the rule, role, or sorting feature."],
+      ["Reflect", "Tiny recap", "Ask what helped them remember."]
+    ]
+  },
+  {
+    id: "early-elementary",
+    label: "5-7",
+    accent: "#dfa526",
+    tag: "Early elementary routines",
+    title: "Rule switching and school routines",
+    rationale:
+      "Early elementary learners can begin connecting EF skills to school tasks, but they still need visible cues, short sequences, and adult-guided reflection.",
+    focus: ["Two- and three-step plans", "Rule switching", "Attention to instructions", "Beginning self-monitoring"],
+    practice: ["Visual schedule blocks", "Board and card games with rules", "Pack-up and start-work routines", "Think-aloud planning before a task"],
+    coach:
+      "Make the invisible visible: draw the steps, point to the cue, and let the learner move pieces as the plan changes.",
+    steps: [
+      ["Preview", "Steps", "Build a two- or three-step visual plan."],
+      ["Practice", "Cue use", "Use the cue during a real class task."],
+      ["Check", "Done marks", "Mark finished steps as they happen."],
+      ["Adjust", "Small fix", "Change one step that did not work."]
+    ]
+  },
+  {
+    id: "middle-childhood",
+    label: "7-10",
+    accent: "#678a45",
+    tag: "Middle childhood strategies",
+    title: "Checklists, attention plans, and self-monitoring",
+    rationale:
+      "Learners can handle more explicit strategy instruction. EF lessons should attach to real reading, math, homework, and peer-collaboration demands.",
+    focus: ["Planning before starting", "Sustained attention", "Working memory strategies", "Error checking"],
+    practice: ["Before-during-after checklists", "Distraction maps", "Chunking and rehearsal", "Strategy comparison after a task"],
+    coach:
+      "Shift from adult reminders to shared tools: the checklist, timer, or plan should carry more of the load over time.",
+    steps: [
+      ["Map", "Task demand", "Identify what the task asks the brain to manage."],
+      ["Select", "One tool", "Choose a checklist, timer, or memory strategy."],
+      ["Apply", "Real work", "Use the tool during a class or home task."],
+      ["Score", "Evidence", "Compare work quality before and after."]
+    ]
+  },
+  {
+    id: "transition",
+    label: "10-12",
+    accent: "#167c78",
+    tag: "Late childhood transition",
+    title: "Multi-step work and independence rehearsals",
+    rationale:
+      "This is the bridge between childhood supports and adolescent independence. Instruction should target materials management, long-term assignments, prioritizing, and flexible problem-solving.",
+    focus: ["Long-term task planning", "Prioritizing", "Materials management", "Plan B thinking"],
+    practice: ["Project backwards-planning", "Homework launch routines", "Binder or digital folder resets", "If-then planning for obstacles"],
+    coach:
+      "Treat independence as something rehearsed: build the system together, then fade support one part at a time.",
+    steps: [
+      ["Unpack", "The assignment", "Find due date, parts, resources, and unknowns."],
+      ["Sequence", "Mini-deadlines", "Break work into dated chunks."],
+      ["Run", "Support fade", "Let the learner operate one part independently."],
+      ["Revise", "System tune", "Update the plan based on what slipped."]
+    ]
+  },
+  {
+    id: "early-teen",
+    label: "13-15",
+    accent: "#df745d",
+    tag: "Rapid adolescent growth window",
+    title: "Goals, emotion, time, and real consequences",
+    rationale:
+      "Research points to rapid EF development across late childhood to mid-adolescence. Lessons should respect rising autonomy while still making planning, impulse control, and reflection concrete.",
+    focus: ["Goal setting", "Planning under emotion", "Time estimation", "Digital distraction control"],
+    practice: ["Weekly goal sprints", "Study environment design", "Urge-surfing and pause routines", "Post-task reflection logs"],
+    coach:
+      "Give teens meaningful ownership: they should help choose the goal, tool, metric, and adjustment.",
+    steps: [
+      ["Choose", "Meaningful goal", "Pick a goal that matters to the teen."],
+      ["Design", "Friction plan", "Remove one distraction and add one support."],
+      ["Track", "One metric", "Measure time, starts, completions, or errors."],
+      ["Debrief", "Adjustment", "Keep, change, or discard the tool."]
+    ]
+  },
+  {
+    id: "late-teen",
+    label: "16-20",
+    accent: "#0f5554",
+    tag: "Late adolescence to early adulthood",
+    title: "Self-designed systems and metacognition",
+    rationale:
+      "EF skills continue maturing toward adult levels. Older learners need practice designing, testing, and revising systems for school, work, relationships, and health.",
+    focus: ["Self-advocacy", "Project management", "Metacognition", "Values-based decisions"],
+    practice: ["Personal operating system audits", "Calendar and task-manager design", "Study-work-recovery planning", "Decision reviews after high-stakes choices"],
+    coach:
+      "Move from compliance to fit: the best EF system is one the learner can explain, maintain, and repair.",
+    steps: [
+      ["Audit", "Current system", "Identify where time, tasks, or energy leaks."],
+      ["Build", "Custom workflow", "Choose tools that match the learner's context."],
+      ["Stress-test", "Busy week", "Try the system when demands are real."],
+      ["Own", "Maintenance", "Set a review rhythm and repair rule."]
+    ]
+  }
+];
+
+const ageTabs = document.querySelector("#ageTabs");
+const pathGrid = document.querySelector("#pathGrid");
+const groupTag = document.querySelector("#groupTag");
+const groupTitle = document.querySelector("#groupTitle");
+const groupRationale = document.querySelector("#groupRationale");
+const focusList = document.querySelector("#focusList");
+const practiceList = document.querySelector("#practiceList");
+const lessonFlow = document.querySelector("#lessonFlow");
+const coachNote = document.querySelector("#coachNote");
+
+let activeGroup = ageGroups[4].id;
+
+function renderList(target, items) {
+  target.replaceChildren(
+    ...items.map((item) => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      return li;
+    })
+  );
+}
+
+function renderLessonSteps(steps) {
+  lessonFlow.replaceChildren(
+    ...steps.map(([label, title, description]) => {
+      const step = document.createElement("div");
+      step.className = "lesson-step";
+
+      const eyebrow = document.createElement("span");
+      eyebrow.textContent = label;
+
+      const heading = document.createElement("strong");
+      heading.textContent = title;
+
+      const copy = document.createElement("p");
+      copy.textContent = description;
+
+      step.append(eyebrow, heading, copy);
+      return step;
+    })
+  );
+}
+
+function setActiveAge(id, shouldScroll = false) {
+  const group = ageGroups.find((item) => item.id === id) ?? ageGroups[0];
+  activeGroup = group.id;
+
+  groupTag.textContent = group.tag;
+  groupTitle.textContent = group.title;
+  groupRationale.textContent = group.rationale;
+  coachNote.textContent = group.coach;
+  renderList(focusList, group.focus);
+  renderList(practiceList, group.practice);
+  renderLessonSteps(group.steps);
+
+  document.querySelectorAll(".age-tab").forEach((button) => {
+    const selected = button.dataset.id === group.id;
+    button.setAttribute("aria-selected", String(selected));
+    button.tabIndex = selected ? 0 : -1;
+  });
+
+  document.querySelectorAll(".path-card").forEach((card) => {
+    card.dataset.active = String(card.dataset.id === group.id);
+  });
+
+  if (shouldScroll) {
+    document.querySelector("#studio").scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+}
+
+function createAgeTabs() {
+  ageTabs.replaceChildren(
+    ...ageGroups.map((group, index) => {
+      const button = document.createElement("button");
+      button.className = "age-tab";
+      button.type = "button";
+      button.role = "tab";
+      button.dataset.id = group.id;
+      button.id = `tab-${group.id}`;
+      button.textContent = group.label;
+      button.setAttribute("aria-controls", "workbench-title");
+      button.addEventListener("click", () => setActiveAge(group.id));
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const currentIndex = ageGroups.findIndex((item) => item.id === activeGroup);
+        const nextIndex =
+          event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? ageGroups.length - 1
+              : event.key === "ArrowLeft"
+                ? (currentIndex - 1 + ageGroups.length) % ageGroups.length
+                : (currentIndex + 1) % ageGroups.length;
+        setActiveAge(ageGroups[nextIndex].id);
+        document.querySelector(`#tab-${ageGroups[nextIndex].id}`).focus();
+      });
+      button.tabIndex = index === 0 ? 0 : -1;
+      return button;
+    })
+  );
+}
+
+function createPathCards() {
+  pathGrid.replaceChildren(
+    ...ageGroups.map((group) => {
+      const card = document.createElement("button");
+      card.className = "path-card";
+      card.type = "button";
+      card.dataset.id = group.id;
+      card.style.setProperty("--accent", group.accent);
+
+      const age = document.createElement("strong");
+      age.textContent = group.label;
+
+      const title = document.createElement("h3");
+      title.textContent = group.title;
+
+      const copy = document.createElement("p");
+      copy.textContent = group.tag;
+
+      const rule = document.createElement("span");
+      rule.setAttribute("aria-hidden", "true");
+
+      card.append(age, title, copy, rule);
+      card.addEventListener("click", () => setActiveAge(group.id, true));
+      return card;
+    })
+  );
+}
+
+createAgeTabs();
+createPathCards();
+setActiveAge(activeGroup);
+
+if (window.lucide) {
+  window.lucide.createIcons();
+}
+
+    </script>
+  </body>
+</html>
