@@ -112,6 +112,47 @@ a {
   color: var(--teal-dark);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sync-indicator,
+.account-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.sync-indicator {
+  border: 1px solid rgba(15, 85, 84, 0.18);
+  color: var(--teal-dark);
+  background: rgba(22, 124, 120, 0.08);
+}
+
+.sync-indicator[data-state="saving"] {
+  color: #7b5711;
+  background: rgba(223, 165, 38, 0.16);
+}
+
+.sync-indicator[data-state="error"] {
+  color: #9a3f2e;
+  background: rgba(223, 116, 93, 0.14);
+}
+
+.account-button {
+  border: 1px solid var(--teal-dark);
+  color: #ffffff;
+  background: var(--teal-dark);
+  text-decoration: none;
+}
+
 .studio {
   position: relative;
   overflow: hidden;
@@ -287,6 +328,13 @@ h1 {
 
 .age-detail {
   padding: 22px;
+  scroll-margin-top: 90px;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.age-detail.is-bopping {
+  box-shadow: inset 4px 0 0 var(--coral), 0 0 0 4px rgba(223, 116, 93, 0.14);
+  transform: translateY(-2px);
 }
 
 .age-kicker {
@@ -473,6 +521,124 @@ li + li {
 
 .skills {
   background: #ffffff;
+}
+
+.account-band {
+  background: #ffffff;
+}
+
+.account-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  gap: 16px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.account-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 22px;
+}
+
+.account-panel h3 {
+  margin: 0 0 14px;
+  font-size: 1.35rem;
+}
+
+.field-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.field-stack label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.field-stack input,
+.field-stack textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 11px 12px;
+  color: var(--ink);
+  background: #fbfcf8;
+  font: inherit;
+}
+
+.field-stack textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.auth-actions,
+.sync-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.primary-action,
+.secondary-action {
+  min-height: 40px;
+  border-radius: var(--radius);
+  padding: 9px 13px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 850;
+}
+
+.primary-action {
+  border: 1px solid var(--teal-dark);
+  color: #ffffff;
+  background: var(--teal-dark);
+}
+
+.secondary-action {
+  border: 1px solid var(--line);
+  color: var(--teal-dark);
+  background: #ffffff;
+}
+
+.auth-message,
+.sync-summary {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.sync-summary strong {
+  color: var(--ink);
+}
+
+.completed-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 34px;
+  margin-top: 12px;
+}
+
+.completed-list span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--teal-dark);
+  background: rgba(22, 124, 120, 0.09);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .skill-grid {
@@ -673,6 +839,7 @@ svg {
   }
 
   .detail-grid,
+  .account-layout,
   .skill-grid,
   .source-cards {
     grid-template-columns: 1fr;
@@ -689,6 +856,11 @@ svg {
 
 @media (max-width: 560px) {
   .site-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .header-actions {
     width: 100%;
     justify-content: space-between;
   }
@@ -775,8 +947,13 @@ svg {
       <nav class="site-nav" aria-label="Main navigation">
         <a href="#age-paths">Age Paths</a>
         <a href="#skills">Skills</a>
+        <a href="#account">Account</a>
         <a href="#research">Research</a>
       </nav>
+      <div class="header-actions">
+        <span class="sync-indicator" id="syncIndicator" data-state="local">Local</span>
+        <a class="account-button" id="accountButton" href="#account">Sign in</a>
+      </div>
     </header>
 
     <main>
@@ -809,7 +986,7 @@ svg {
 
             <div class="age-tabs" id="ageTabs" role="tablist" aria-label="Executive functioning age groups"></div>
 
-            <article class="age-detail" aria-live="polite">
+            <article class="age-detail" id="ageDetail" aria-live="polite">
               <p class="age-kicker" id="groupTag"></p>
               <h3 id="groupTitle"></h3>
               <p id="groupRationale"></p>
@@ -843,6 +1020,58 @@ svg {
           </p>
         </div>
         <div class="path-grid" id="pathGrid" aria-label="Age group overview"></div>
+      </section>
+
+      <section class="band account-band" id="account">
+        <div class="section-head">
+          <p class="eyebrow">Cloud sync</p>
+          <h2>Account and progress</h2>
+          <p>
+            Sign in to keep age-path progress and learner notes synced across devices.
+          </p>
+        </div>
+        <div class="account-layout">
+          <form class="account-panel" id="authForm">
+            <h3>Sign in</h3>
+            <div class="field-stack">
+              <label>
+                Email
+                <input id="authEmail" type="email" autocomplete="email" required />
+              </label>
+              <label>
+                Password
+                <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required />
+              </label>
+            </div>
+            <div class="auth-actions">
+              <button class="primary-action" type="submit">Sign in</button>
+              <button class="secondary-action" id="signUpButton" type="button">Create account</button>
+            </div>
+            <p class="auth-message" id="authMessage">Progress saves locally until you sign in.</p>
+          </form>
+
+          <section class="account-panel" aria-labelledby="sync-title">
+            <h3 id="sync-title">Synced workspace</h3>
+            <div id="signedOutPanel">
+              <p class="sync-summary">No account connected.</p>
+            </div>
+            <div id="signedInPanel" hidden>
+              <p class="sync-summary">Signed in as <strong id="userEmail"></strong></p>
+              <div class="field-stack">
+                <label>
+                  Learner note
+                  <textarea id="learnerNote" placeholder="Current supports, goals, or tutoring focus"></textarea>
+                </label>
+              </div>
+              <div class="sync-actions">
+                <button class="primary-action" id="toggleCompleteButton" type="button">Mark current path complete</button>
+                <button class="secondary-action" id="signOutButton" type="button">Sign out</button>
+              </div>
+              <p class="sync-summary" id="completionSummary"></p>
+              <div class="completed-list" id="completedList" aria-label="Completed age paths"></div>
+            </div>
+          </section>
+        </div>
       </section>
 
       <section class="band skills" id="skills">
@@ -947,6 +1176,9 @@ svg {
 
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script>
+const SUPABASE_URL = "https://mmfihxopylbydnwvqulr.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tZmloeG9weWxieWRud3ZxdWxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4OTk0NzcsImV4cCI6MjA5NzQ3NTQ3N30.J9jW_00S0YX5D1dytaeqIGwJDNC5VDVLgc-9NGFvau4";
+
 const ageGroups = [
   {
     id: "caregiver",
@@ -1092,8 +1324,34 @@ const focusList = document.querySelector("#focusList");
 const practiceList = document.querySelector("#practiceList");
 const lessonFlow = document.querySelector("#lessonFlow");
 const coachNote = document.querySelector("#coachNote");
+const syncIndicator = document.querySelector("#syncIndicator");
+const accountButton = document.querySelector("#accountButton");
+const authForm = document.querySelector("#authForm");
+const authEmail = document.querySelector("#authEmail");
+const authPassword = document.querySelector("#authPassword");
+const signUpButton = document.querySelector("#signUpButton");
+const signOutButton = document.querySelector("#signOutButton");
+const authMessage = document.querySelector("#authMessage");
+const signedOutPanel = document.querySelector("#signedOutPanel");
+const signedInPanel = document.querySelector("#signedInPanel");
+const userEmail = document.querySelector("#userEmail");
+const learnerNote = document.querySelector("#learnerNote");
+const toggleCompleteButton = document.querySelector("#toggleCompleteButton");
+const completionSummary = document.querySelector("#completionSummary");
+const completedList = document.querySelector("#completedList");
 
 let activeGroup = ageGroups[4].id;
+let ageDetailPulse;
+let supabaseClient;
+let currentUser;
+let syncSaveTimer;
+let isApplyingCloudState = false;
+let cloudState = {
+  activeAge: activeGroup,
+  completed: [],
+  note: "",
+  updatedAt: null
+};
 
 function renderList(target, items) {
   target.replaceChildren(
@@ -1126,6 +1384,224 @@ function renderLessonSteps(steps) {
   );
 }
 
+function setSyncStatus(label, state = "local") {
+  if (!syncIndicator) return;
+  syncIndicator.textContent = label;
+  syncIndicator.dataset.state = state;
+}
+
+function setAuthMessage(message, state = "local") {
+  if (!authMessage) return;
+  authMessage.textContent = message;
+  authMessage.dataset.state = state;
+}
+
+function normalizeCloudState(value = {}) {
+  return {
+    activeAge: ageGroups.some((group) => group.id === value.activeAge) ? value.activeAge : activeGroup,
+    completed: Array.isArray(value.completed)
+      ? value.completed.filter((id) => ageGroups.some((group) => group.id === id))
+      : [],
+    note: typeof value.note === "string" ? value.note : "",
+    updatedAt: value.updatedAt || null
+  };
+}
+
+function renderCloudState() {
+  if (learnerNote && learnerNote.value !== cloudState.note) {
+    learnerNote.value = cloudState.note;
+  }
+
+  const completedLabels = cloudState.completed
+    .map((id) => ageGroups.find((group) => group.id === id)?.label)
+    .filter(Boolean);
+
+  if (completionSummary) {
+    completionSummary.textContent = completedLabels.length
+      ? `${completedLabels.length} age path${completedLabels.length === 1 ? "" : "s"} marked complete.`
+      : "No completed age paths yet.";
+  }
+
+  if (completedList) {
+    completedList.replaceChildren(
+      ...(completedLabels.length ? completedLabels : ["None yet"]).map((label) => {
+        const chip = document.createElement("span");
+        chip.textContent = label;
+        return chip;
+      })
+    );
+  }
+
+  const activeComplete = cloudState.completed.includes(activeGroup);
+  if (toggleCompleteButton) {
+    toggleCompleteButton.textContent = activeComplete
+      ? "Mark current path incomplete"
+      : "Mark current path complete";
+  }
+}
+
+function scheduleCloudSave(statusText = "Saving") {
+  if (!supabaseClient || !currentUser || isApplyingCloudState) return;
+
+  cloudState = {
+    ...cloudState,
+    activeAge: activeGroup,
+    note: learnerNote?.value ?? cloudState.note,
+    updatedAt: new Date().toISOString()
+  };
+
+  setSyncStatus(statusText, "saving");
+  window.clearTimeout(syncSaveTimer);
+  syncSaveTimer = window.setTimeout(saveCloudState, 650);
+}
+
+async function saveCloudState() {
+  if (!supabaseClient || !currentUser) return;
+
+  const { error } = await supabaseClient.auth.updateUser({
+    data: { efPracticeStudio: cloudState }
+  });
+
+  if (error) {
+    setSyncStatus("Sync error", "error");
+    setAuthMessage(error.message, "error");
+    return;
+  }
+
+  setSyncStatus("Synced", "synced");
+  setAuthMessage("Progress synced.", "synced");
+  renderCloudState();
+}
+
+function applySession(session) {
+  currentUser = session?.user ?? null;
+
+  if (!currentUser) {
+    signedOutPanel.hidden = false;
+    signedInPanel.hidden = true;
+    accountButton.textContent = "Sign in";
+    setSyncStatus("Local", "local");
+    setAuthMessage("Progress saves locally until you sign in.");
+    renderCloudState();
+    return;
+  }
+
+  signedOutPanel.hidden = true;
+  signedInPanel.hidden = false;
+  userEmail.textContent = currentUser.email || "account";
+  accountButton.textContent = "Account";
+
+  cloudState = normalizeCloudState(currentUser.user_metadata?.efPracticeStudio);
+  isApplyingCloudState = true;
+  setActiveAge(cloudState.activeAge || activeGroup);
+  isApplyingCloudState = false;
+  renderCloudState();
+  setSyncStatus("Synced", "synced");
+  setAuthMessage("Signed in and synced.", "synced");
+}
+
+async function initSupabase() {
+  let createClient;
+
+  try {
+    createClient = window.supabase?.createClient
+      || (await import("https://esm.sh/@supabase/supabase-js@2")).createClient;
+  } catch (_error) {
+    setSyncStatus("Offline", "error");
+    setAuthMessage("Cloud sync is unavailable right now.", "error");
+    return;
+  }
+
+  supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true
+    }
+  });
+
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) {
+    setSyncStatus("Sync error", "error");
+    setAuthMessage(error.message, "error");
+    return;
+  }
+
+  applySession(data.session);
+  supabaseClient.auth.onAuthStateChange((_event, session) => applySession(session));
+}
+
+async function signInWithEmail(event) {
+  event.preventDefault();
+  if (!supabaseClient) return;
+
+  setAuthMessage("Signing in...", "saving");
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: authEmail.value.trim(),
+    password: authPassword.value
+  });
+
+  if (error) {
+    setSyncStatus("Sync error", "error");
+    setAuthMessage(error.message, "error");
+  }
+}
+
+async function signUpWithEmail() {
+  if (!supabaseClient) return;
+  if (!authForm.reportValidity()) return;
+
+  setAuthMessage("Creating account...", "saving");
+  const { error } = await supabaseClient.auth.signUp({
+    email: authEmail.value.trim(),
+    password: authPassword.value,
+    options: {
+      data: { efPracticeStudio: cloudState }
+    }
+  });
+
+  if (error) {
+    setSyncStatus("Sync error", "error");
+    setAuthMessage(error.message, "error");
+    return;
+  }
+
+  setAuthMessage("Account created. Check email if confirmation is enabled.", "synced");
+}
+
+async function signOut() {
+  if (!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+}
+
+function toggleCurrentCompletion() {
+  const completed = new Set(cloudState.completed);
+  if (completed.has(activeGroup)) {
+    completed.delete(activeGroup);
+  } else {
+    completed.add(activeGroup);
+  }
+
+  cloudState = { ...cloudState, completed: Array.from(completed) };
+  renderCloudState();
+  scheduleCloudSave("Saving");
+}
+
+function guideToAgeDetail() {
+  const detail = document.querySelector("#ageDetail");
+  if (!detail) return;
+
+  window.requestAnimationFrame(() => {
+    detail.scrollIntoView({ block: "start", behavior: "smooth" });
+    detail.classList.remove("is-bopping");
+    window.clearTimeout(ageDetailPulse);
+
+    window.requestAnimationFrame(() => {
+      detail.classList.add("is-bopping");
+      ageDetailPulse = window.setTimeout(() => detail.classList.remove("is-bopping"), 900);
+    });
+  });
+}
+
 function setActiveAge(id, shouldScroll = false) {
   const group = ageGroups.find((item) => item.id === id) ?? ageGroups[0];
   activeGroup = group.id;
@@ -1148,8 +1624,11 @@ function setActiveAge(id, shouldScroll = false) {
     card.dataset.active = String(card.dataset.id === group.id);
   });
 
+  renderCloudState();
+  scheduleCloudSave("Saving");
+
   if (shouldScroll) {
-    document.querySelector("#studio").scrollIntoView({ block: "start", behavior: "smooth" });
+    guideToAgeDetail();
   }
 }
 
@@ -1164,7 +1643,7 @@ function createAgeTabs() {
       button.id = `tab-${group.id}`;
       button.textContent = group.label;
       button.setAttribute("aria-controls", "workbench-title");
-      button.addEventListener("click", () => setActiveAge(group.id));
+      button.addEventListener("click", () => setActiveAge(group.id, true));
       button.addEventListener("keydown", (event) => {
         if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
         event.preventDefault();
@@ -1217,6 +1696,13 @@ function createPathCards() {
 createAgeTabs();
 createPathCards();
 setActiveAge(activeGroup);
+
+authForm?.addEventListener("submit", signInWithEmail);
+signUpButton?.addEventListener("click", signUpWithEmail);
+signOutButton?.addEventListener("click", signOut);
+toggleCompleteButton?.addEventListener("click", toggleCurrentCompletion);
+learnerNote?.addEventListener("input", () => scheduleCloudSave("Saving"));
+initSupabase();
 
 if (window.lucide) {
   window.lucide.createIcons();
